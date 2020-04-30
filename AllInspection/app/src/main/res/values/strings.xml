@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AllInspection</string>
+    <string name="second_step">将合格证的二维码放入框内，即可自动扫描</string>
+    <string name="ok">确定</string>
+</resources>

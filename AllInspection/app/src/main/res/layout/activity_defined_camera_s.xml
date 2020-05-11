@@ -12,8 +12,14 @@
         <SurfaceView
                 android:id="@+id/surface_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 />
+
+        <com.seatrend.vendor.allinspection.view.MoveCameraFoucs
+                android:id="@+id/focusView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"/> //gone 不行 绘制和点触及冲突
 
         <LinearLayout
                 android:id="@+id/ll_control"

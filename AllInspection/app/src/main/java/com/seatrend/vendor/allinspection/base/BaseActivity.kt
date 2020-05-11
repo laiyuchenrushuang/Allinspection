@@ -1,13 +1,16 @@
 package com.seatrend.vendor.allinspection.base
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.support.annotation.RequiresApi
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
@@ -24,6 +27,7 @@ import com.seatrend.vendor.allinspection.utils.CarHphmUtils
 import com.seatrend.vendor.allinspection.utils.DP2PX
 import com.seatrend.vendor.allinspection.utils.GsonUtils
 import com.seatrend.vendor.allinspection.utils.LoadingDialog
+import java.util.ArrayList
 import java.util.regex.Pattern
 
 /**
@@ -104,11 +108,48 @@ abstract class BaseActivity : AppCompatActivity(), BaseView {
         super.onCreate(savedInstanceState)
         setContentView(getLayout())
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT//竖屏
-        initView()
         initCommonTitle()
+        initView()
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             setStatusBarColor(ContextCompat.getColor(this, R.color.theme_color))
+        }
+    }
+
+    //request
+    fun appPermissionReq() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            appRequestPermissions()
+        }
+    }
+
+    //权限申请
+    @RequiresApi(Build.VERSION_CODES.M)
+    protected fun appRequestPermissions() {
+
+        val permission = ArrayList<String>()
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) !== PackageManager.PERMISSION_GRANTED) {
+            permission.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (checkSelfPermission(Manifest.permission.CAMERA) !== PackageManager.PERMISSION_GRANTED) {
+            permission.add(Manifest.permission.CAMERA)
+        }
+
+        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) !== PackageManager.PERMISSION_GRANTED) {
+            permission.add(Manifest.permission.READ_PHONE_STATE)
+        }
+        if (checkSelfPermission(Manifest.permission.NFC) !== PackageManager.PERMISSION_GRANTED) {
+            permission.add(Manifest.permission.NFC)
+        }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) !== PackageManager.PERMISSION_GRANTED) {
+            permission.add(Manifest.permission.RECORD_AUDIO)
+        }
+
+        if (permission.size > 0) {
+            ActivityCompat.requestPermissions(this@BaseActivity, permission.toTypedArray(), 1)
         }
     }
 
@@ -282,11 +323,11 @@ abstract class BaseActivity : AppCompatActivity(), BaseView {
         }
     }
 
-    override fun showToast(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    override fun showToast(msg: Any) {
+        Toast.makeText(this, msg.toString(), Toast.LENGTH_SHORT).show()
     }
 
-    override fun showLog(msg: String) {
+    override fun showLog(msg: Any) {
         Log.d("[lylog]", "----- " + msg)
     }
 

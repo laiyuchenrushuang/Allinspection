@@ -1,30 +1,31 @@
 package com.seatrend.vendor.allinspection.camera.ui;
 
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
-import android.widget.ImageView;
 import android.widget.Toast;
 import butterknife.BindView;
 import com.seatrend.vendor.allinspection.R;
 import com.seatrend.vendor.allinspection.camera.manager.AnimUtil;
+import com.seatrend.vendor.allinspection.view.MoveCameraFoucs;
+import com.seatrend.xj.electricbicyclesalesystem.http.thread.ThreadPoolManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by ly on 2020/4/26 13:37
@@ -33,6 +34,8 @@ public abstract class CameraActivity extends AppCompatActivity {
 
     @BindView(R.id.surface_view)
     public SurfaceView surface_view;
+    @BindView(R.id.focusView)
+    public MoveCameraFoucs focusView;
 
     protected OrientationEventListener orientationEventListener;
 
@@ -42,6 +45,16 @@ public abstract class CameraActivity extends AppCompatActivity {
     protected int orientation = 0;//方向 度数  0  90 180 270
     protected int mCameraId = 0;  //主副摄id
 
+    protected int mPrewidthP, mPreHeightP, mPrewidthT, mPreHeightT;
+
+    protected long mCurrentStartFocusTime = 0;  //点击屏幕的初次时间，防止第二次点击快速消失问题
+
+    protected final static CAMERA_MODEL MODEL = CAMERA_MODEL.MODEL_16_9; //照片尺寸的比例
+
+    enum CAMERA_MODEL {
+        MODEL_4_3,
+        MODEL_16_9
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +72,7 @@ public abstract class CameraActivity extends AppCompatActivity {
                 if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
                     return;  //手机平放时，检测不到有效的角度
                 }
-//只检测是否有四个角度的改变
+                //只检测是否有四个角度的改变
                 if (orientation > 350 || orientation < 10) { //0度
                     getOrientation(0);
                 } else if (orientation > 80 && orientation < 100) { //90度
@@ -105,7 +118,6 @@ public abstract class CameraActivity extends AppCompatActivity {
         return mConfiguration.orientation; //获取屏幕方向
     }
 
-
     //设置全屏模式(以屏幕的宽为基准，因为宽<高)
     private void requestAllScreen() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -125,37 +137,100 @@ public abstract class CameraActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (MoveCameraFoucs.CAMERA_FOCUS_BACK == msg.what) {
+                if (mCamera != null) {
+                    defParameters(mCamera);
+                }
+                focusView.resetFocus();
+
+                showLog("  flag = " + (System.currentTimeMillis() >= mCurrentStartFocusTime + MoveCameraFoucs.CAMERA_FOCUS_BACK_TIME));
+
+                synchronized (this) {
+                    if (!ThreadPoolManager.Companion.getInstance().isBusy()) {
+                        ThreadPoolManager.Companion.getInstance().execute(new Thread() {  //不停点屏幕对焦怎么办的处理
+                            @Override
+                            public void run() {
+                                super.run();
+                                while (true) {
+                                    if (System.currentTimeMillis() >= mCurrentStartFocusTime + MoveCameraFoucs.CAMERA_FOCUS_BACK_TIME) {
+                                        runOnUiThread(() -> {
+                                            focusView.resetFocus();
+                                            focusView.setCameraFocusBack(false);  //状态一个轮回完毕
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    };
+
     //自动对焦回调
     protected Camera.AutoFocusCallback mAotuFocusCallBack = new Camera.AutoFocusCallback() {
 
         @Override
         public void onAutoFocus(boolean success, Camera camera) {
+            mCurrentStartFocusTime = System.currentTimeMillis();
             //多线程的考虑
-            showLog("对焦：" + success);
-            showToast("对焦：" + success);
             if (success) {
-
-
+                focusView.setFocused(handler);
+            } else {
+                focusView.setFocusFailed(handler);
             }
-//
-            defParameters(camera); // 默认自动对焦
         }
     };
 
 
     //默认相机模式，自动对焦 持续的fc
     protected void defParameters(Camera camera) {
-        camera.cancelAutoFocus();
-        if (getmCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) { //前置
-            Camera.Parameters parameters = camera.getParameters();
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //对焦模式几种？6+（录像的对焦方式 FOCUS_MODE_CONTINUOUS_VIDEO）  普通：FOCUS_MODE_CONTINUOUS_PICTURE
-            camera.setParameters(parameters);
-        } else if (getmCameraId() == Camera.CameraInfo.CAMERA_FACING_BACK) {//后置
-            Camera.Parameters parameters = camera.getParameters();
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //对焦模式几种？6+（录像的对焦方式 FOCUS_MODE_CONTINUOUS_VIDEO）  普通：FOCUS_MODE_CONTINUOUS_PICTURE
-            camera.setParameters(parameters);
-        }
+        Camera.Parameters parameters = camera.getParameters();
+//        if (getmCameraId() == Camera.CameraInfo.CAMERA_FACING_FRONT) { //前置
+//            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //对焦模式几种？6+（录像的对焦方式 FOCUS_MODE_CONTINUOUS_VIDEO）  普通：FOCUS_MODE_CONTINUOUS_PICTURE
+//        } else if (getmCameraId() == Camera.CameraInfo.CAMERA_FACING_BACK) {//后置
+//            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE); //对焦模式几种？6+（录像的对焦方式 FOCUS_MODE_CONTINUOUS_VIDEO）  普通：FOCUS_MODE_CONTINUOUS_PICTURE
+//        }
+        camera.cancelAutoFocus(); //取消之前的对焦状态
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        setPreiewSize(camera, MODEL);
+        parameters.setPictureSize(mPrewidthT, mPreHeightT);
+        parameters.setPreviewSize(mPrewidthP, mPreHeightP);
+        parameters.setPictureFormat(PixelFormat.JPEG); // 设置照片格式
+        parameters.setJpegQuality(100);
+        camera.setParameters(parameters);
         mParameters = camera.getParameters();
+    }
+
+    //获取最佳的尺寸
+    private void setPreiewSize(Camera camera, CAMERA_MODEL modelflag) {
+        List<Camera.Size> preListSize = camera.getParameters().getSupportedPreviewSizes();
+        List<Camera.Size> tpListSize = camera.getParameters().getSupportedPictureSizes();
+//       showLog("     "+GsonUtils.toJson(preListSize));
+        int maxPreSize = 0;
+        for (Camera.Size s : preListSize) {
+            if (((float) s.width / s.height) == ((modelflag == CAMERA_MODEL.MODEL_16_9) ? 16f / 9 : 4f / 9) && s.width > maxPreSize) {
+                maxPreSize = s.width;
+                mPreHeightP = s.height;
+                mPrewidthP = s.width;
+            }
+        }
+
+        int maxTpSize = 0;
+        for (Camera.Size s : tpListSize) {
+            if (((float) s.width) / s.height == ((modelflag == CAMERA_MODEL.MODEL_16_9) ? 16f / 9 : 4f / 9) && s.width > maxTpSize) {
+                maxTpSize = s.width;
+                mPreHeightT = s.height;
+                mPrewidthT = s.width;
+            }
+        }
+//        showLog("preview size width = "+mPrewidthP + "  height = "+mPreHeightP);
     }
 
 
@@ -205,11 +280,17 @@ public abstract class CameraActivity extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(final MotionEvent event) {
         switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                focusView.setVisibility(MoveCameraFoucs.VISIBLE);
+                float x = event.getX();
+                float y = event.getY();
+                focusView.setFocusViewXY(x, y);
+                break;
             case MotionEvent.ACTION_UP:
                 setFocusArea(event);
                 break;
         }
-        return true;
+        return super.onTouchEvent(event);
     }
 
 
@@ -242,9 +323,13 @@ public abstract class CameraActivity extends AppCompatActivity {
 //                    showToast(e.getMessage() + " id = " + mCameraId); //cameraid = 1  报异常
             e.printStackTrace();
         }
-        showLog("点击屏幕 X= " + event.getX() + "  Y= " + event.getY());
     }
 
+    protected void playSystemSound(){
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+        r.play();
+    }
 
     /**
      * ui的旋轉方向

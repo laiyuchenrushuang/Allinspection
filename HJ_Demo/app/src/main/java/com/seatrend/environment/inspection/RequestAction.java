@@ -25,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonSyntaxException;
+import com.mydemo.mydblib.controller.PerSonController;
+import com.mydemo.mydblib.entity.PersonInforDao;
 import com.seatrend.environment.inspection.adpter.PhotoAdapter;
 import com.seatrend.environment.inspection.entity.ShareEntity;
 import com.seatrend.environment.inspection.service.AIDLService;
@@ -56,6 +58,8 @@ public class RequestAction extends AppCompatActivity {
         getData();
         initRecycleView();
         bindevent();
+        showLog(PerSonController.getInstance(this).searchAll());
+
     }
 
     private void permissionCheck() {

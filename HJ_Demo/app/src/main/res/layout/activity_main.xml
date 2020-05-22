@@ -1,49 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
     android:orientation="vertical"
     tools:context=".RequestAction">
 
-    <!--<TextView-->
-
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="50dp"-->
-    <!--android:background="@color/green"-->
-    <!--android:gravity="center"-->
-    <!--android:text="环检界面"-->
-    <!--android:textSize="18sp" />-->
-
-    <TextView
+    <ScrollView
+        android:id="@+id/s"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="收到安检的数据："
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/aj_send"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@null"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="收到安检的数据："
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="参数信息："
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/aj_send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="图片信息："
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/m_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:overScrollMode="never"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="0.01" />
+
 
     <Button
         android:id="@+id/hj_exit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/green"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimary"
         android:text="环检完成"
         android:textSize="16sp" />
 
@@ -51,8 +82,15 @@
         android:id="@+id/hj_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/green"
+        android:layout_below="@id/hj_exit"
+        android:layout_marginBottom="100dp"
+        android:background="@color/colorPrimary"
         android:text="环检主动发送"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
 </LinearLayout>

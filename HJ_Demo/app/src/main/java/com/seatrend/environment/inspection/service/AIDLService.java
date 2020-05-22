@@ -11,9 +11,13 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.seatrend.environment.inspection.GsonUtils;
+import com.seatrend.environment.inspection.entity.CameSpinner;
 import com.seatrend.vendor.IInspect;
 import com.seatrend.vendor.ServiceLisener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,30 +57,44 @@ public class AIDLService extends Service {
         @Override
         public void sendVehInfo(final String sendJsonData, final ServiceLisener servicelisener) {
             try {
-                showLog("服务器数据版本 1.2");
+//
+//                Timer timer = new Timer();
+//                timer.schedule(new TimerTask() {
+//                    @Override
+//                    public void run() {
+//                        try {
+//                            servicelisener.serviceSuccess("服务器数据版本 1.2\n" +
+//                                    "查询 " + sendJsonData + " 的环检信息成功\n" +
+//                                    "车辆数据信息：...\n"
+//                                    + "车辆照片信息：...\n"
+//                                    + "其他信息：...");
+//                        } catch (RemoteException e) {
+//                            try {
+//                                servicelisener.serviceError("服务<<-sendVehInfo异常 " + e.getMessage());
+//                            } catch (RemoteException e1) {
+//                                e1.printStackTrace();
+//                            }
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, 3000);
+                List<CameSpinner> list = new ArrayList<>();
+                for (int i = 0; i < 5; i++) {
+                    CameSpinner entity = new CameSpinner();
+                    entity.setDmz("hj" + i);
+                    entity.setSfhj(true);
+                    entity.setSfyp(false);
+                    entity.setSfbp(true);
+                    entity.setDmsm1("环检图片" + i);
+                    list.add(entity);
+                }
+                servicelisener.serviceSuccess(GsonUtils.toJson(list));
+                showLog("环检图片 1.2 = "+ GsonUtils.toJson(list));
+                showLog("环检图片 1.2 = "+ sendJsonData);
 
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            servicelisener.serviceSuccess("服务器数据版本 1.2\n" +
-                                    "查询 " + sendJsonData + " 的环检信息成功\n" +
-                                    "车辆数据信息：...\n"
-                                    + "车辆照片信息：...\n"
-                                    + "其他信息：...");
-                        } catch (RemoteException e) {
-                            try {
-                                servicelisener.serviceError("服务<<-sendVehInfo异常 " + e.getMessage());
-                            } catch (RemoteException e1) {
-                                e1.printStackTrace();
-                            }
-                            e.printStackTrace();
-                        }
-                    }
-                }, 3000);
             } catch (Exception e) {
                 e.printStackTrace();
+                showLog("环检图片 Exception"+ e.getMessage());
                 try {
                     servicelisener.serviceError("服务<<-sendVehInfo异常 " + e.getMessage());
                 } catch (RemoteException e1) {

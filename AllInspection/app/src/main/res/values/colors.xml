@@ -32,4 +32,6 @@
     <color name="laser_color">#196fda</color>
     <color name="corner_color">#196fda</color>
     <color name="line_color">#979797</color>
+    <color name="line">#dddddd</color>
+    <color name="blue">#006EBF</color>
 </resources>

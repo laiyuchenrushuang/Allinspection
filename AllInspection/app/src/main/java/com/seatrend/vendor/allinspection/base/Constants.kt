@@ -25,6 +25,9 @@ class Constants {
         var TOKEN = ""
         var GET = "GET"
         var POST = "POST"
-    }
 
+        val SHARE_PRE_KEY = "share_pre_key"
+        val E_INSPECTION_PHOTO = "e_inspection_photo"
+        val ALL_PHOTO = "all_photo"
+    }
 }

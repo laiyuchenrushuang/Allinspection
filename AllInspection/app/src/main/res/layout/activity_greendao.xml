@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <include layout="@layout/common_title"/>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            //添加信息 列表
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp">
+
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:text="NO."/>
+
+                    <EditText
+                            android:id="@+id/person_number"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp"
+                            android:inputType="number"
+                            android:background="@drawable/button_bg_style_with"/>
+                </LinearLayout>
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp">
+
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:text="name"/>
+
+                    <EditText
+                            android:id="@+id/person_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp"
+                            android:background="@drawable/button_bg_style_with"/>
+                </LinearLayout>
+
+                <View
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"/>
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp">
+
+                    <TextView
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/black"
+                            android:gravity="center"
+                            android:text="sex"/>
+
+                    <EditText
+                            android:id="@+id/person_sex"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="5dp"
+                            android:background="@drawable/button_bg_style_with"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            //操作列表
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                <Button
+                        android:id="@+id/add"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="增加"/>
+
+                <Button
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/delete"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="删除"/>
+                <Button
+                        android:id="@+id/query_all"
+                        android:layout_width="110dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/delete_all"
+                        android:layout_height="wrap_content"
+                        android:text="QUERY_ALL"/>
+                <Button
+                        android:id="@+id/delete_all"
+                        android:layout_width="110dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_height="wrap_content"
+                        android:text="DELETE_ALL"/>
+                <Button
+                        android:layout_below="@id/add"
+                        android:id="@+id/query"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="查询"/>
+
+                <Button
+                        android:layout_below="@id/delete"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/update"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="更改"/>
+            </RelativeLayout>
+
+            //数据库列表
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp">
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:background="@drawable/person_title"
+                        android:gravity="center"
+                        android:text="order"/>
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:background="@drawable/person_title"
+                        android:gravity="center"
+                        android:text="NO."/>
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:background="@drawable/person_title"
+                        android:gravity="center"
+                        android:text="name"/>
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:background="@drawable/person_title"
+                        android:gravity="center"
+                        android:text="sex"/>
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:background="@drawable/person_title"
+                        android:gravity="center"
+                        android:text="time"/>
+
+            </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/person_recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

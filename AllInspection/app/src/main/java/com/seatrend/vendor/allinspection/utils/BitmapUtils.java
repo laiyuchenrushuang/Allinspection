@@ -438,6 +438,7 @@ public class BitmapUtils {
 
         Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
+        Log.d("lylog","   bitmap w = "+bm.getWidth()+ "  h = "+bm.getHeight());
         File photoFile = null;
         if (bm != null) {
             photoFile = new File(dirfile, System.currentTimeMillis() + ".jpg");

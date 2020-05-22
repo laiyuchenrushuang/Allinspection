@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <include layout="@layout/common_title"/>
+
+    <include
+            layout="@layout/recyclerview"/>
+
+<View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+    <TextView
+            android:id="@+id/v_next"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/button_bg_blue"
+            android:gravity="center"
+            android:text="完成拍照"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+</LinearLayout>

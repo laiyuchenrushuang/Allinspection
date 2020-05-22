@@ -22,7 +22,7 @@ import android.os.Looper;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.ResultPointCallback;
-import com.seatrend.xj.electricbicyclesalesystem.zxing.activity.CaptureActivity;
+import com.seatrend.vendor.allinspection.zxing.activity.CaptureActivity;
 
 import java.util.Hashtable;
 import java.util.Vector;

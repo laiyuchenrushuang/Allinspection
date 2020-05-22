@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <include layout="@layout/common_title"/>
+
+    <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="安检查询的车辆信息"
+            android:layout_weight="1"/>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:visibility="gone"
+            android:background="@color/line"/>
+
+    <RelativeLayout
+            android:id="@+id/rl_zp"
+            android:layout_width="fill_parent"
+            android:layout_height="42dp"
+            android:background="@drawable/btn_item_list"
+            android:visibility="visible">
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:visibility="visible"
+                android:background="@color/line"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="检验照片"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"/>
+
+        <ImageView
+                android:id="@+id/iv_zp"
+                android:layout_width="7.3dp"
+                android:layout_height="12.6dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:src="@mipmap/arrow_right"/>
+        <TextView
+                android:id="@+id/tv_zp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_zp"
+                android:text="未录入"
+                android:textSize="12sp"
+                />
+
+    </RelativeLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:visibility="visible"
+            android:background="@color/line"/>
+    <RelativeLayout
+            android:id="@+id/rl_hj"
+            android:layout_width="fill_parent"
+            android:layout_height="42dp"
+            android:onClick="btHjdl"
+            android:background="@drawable/btn_item_list"
+            android:visibility="visible">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="开启环检"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
+
+        <ImageView
+                android:id="@+id/iv_hjjl"
+                android:layout_width="7.3dp"
+                android:layout_height="12.6dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:src="@mipmap/arrow_right" />
+        <TextView
+                android:id="@+id/tv_hjjl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_hjjl"
+                android:text="环检结论：未录入"
+                android:textSize="12sp"
+                />
+
+    </RelativeLayout>
+
+    <TextView
+            android:id="@+id/v_next"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/button_bg_blue"
+            android:gravity="center"
+            android:text="完成并提交"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+</LinearLayout>

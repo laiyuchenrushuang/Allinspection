@@ -19,7 +19,8 @@
                 android:id="@+id/focusView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"/> //gone 不行 绘制和点触及冲突
+                android:visibility="invisible"/>
+        //gone 不行 绘制和点触及冲突
 
         <LinearLayout
                 android:id="@+id/ll_control"
@@ -28,6 +29,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="20dp"
+                android:orientation="vertical"
                 android:gravity="center">
 
             <ImageView
@@ -35,6 +37,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/button_takephoto"/>
+
+            <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_normal_14sp"
+                    android:text="50:30"
+                    android:visibility="gone"/>
         </LinearLayout>
 
 

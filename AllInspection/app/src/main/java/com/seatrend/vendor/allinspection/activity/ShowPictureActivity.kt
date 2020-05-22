@@ -11,6 +11,9 @@ import kotlinx.android.synthetic.main.activity_picture.*
 class ShowPictureActivity:BaseActivity() {
     override fun initView() {
         setPageTitle("图片详情")
+        if(null != intent.getStringExtra("zpmc")){
+            setPageTitle(intent.getStringExtra("zpmc"))
+        }
         img.enable()//启动缩放
         Glide.with(this).load(intent.getStringExtra("photo_path")).into(img)
     }

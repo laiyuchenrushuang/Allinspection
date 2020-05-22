@@ -50,7 +50,19 @@ public class StringUtils {
         }
     }
 
-    public static long dateToStamp(String s) {
+    public static String longToStringNoDate(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static long dateToStampNoHour(String s) {
 
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
@@ -63,7 +75,7 @@ public class StringUtils {
         return 0;
     }
 
-    public static long date2Stamp(String s) {
+    public static long dateToStamp(String s) {
 
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
@@ -81,6 +93,23 @@ public class StringUtils {
      */
     public static String isNull(Object obj) {
         String content = "/";
+
+        try {
+            if (obj != null && !obj.toString().equals("") && !obj.toString().equals("null"))
+                content = obj.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return content;
+    }
+
+
+    /**
+     * 处理空字符串
+     */
+    public static String isNullToNum(Object obj) {
+        String content = "1";
 
         try {
             if (obj != null && !obj.toString().equals("") && !obj.toString().equals("null"))

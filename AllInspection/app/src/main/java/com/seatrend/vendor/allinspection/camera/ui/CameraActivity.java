@@ -20,6 +20,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import com.seatrend.vendor.allinspection.R;
 import com.seatrend.vendor.allinspection.camera.manager.AnimUtil;
+import com.seatrend.vendor.allinspection.utils.GsonUtils;
 import com.seatrend.vendor.allinspection.view.MoveCameraFoucs;
 import com.seatrend.xj.electricbicyclesalesystem.http.thread.ThreadPoolManager;
 import org.jetbrains.annotations.Nullable;
@@ -51,9 +52,20 @@ public abstract class CameraActivity extends AppCompatActivity {
 
     protected final static CAMERA_MODEL MODEL = CAMERA_MODEL.MODEL_16_9; //照片尺寸的比例
 
-    enum CAMERA_MODEL {
-        MODEL_4_3,
-        MODEL_16_9
+    public enum CAMERA_MODEL {
+        //有些机型不是严格的16比9 那么就取相近的  小数保留一位 不敢两位，两位可能都没得
+        MODEL_4_3(Float.valueOf(String.format("%.1f", 4f / 3))),
+        MODEL_16_9(Float.valueOf(String.format("%.1f", 16f / 9)));
+        private float value;
+
+        CAMERA_MODEL(float value) {
+
+            this.value = value;
+        }
+
+        public float getValue() {
+            return value;
+        }
     }
 
     @Override
@@ -202,6 +214,10 @@ public abstract class CameraActivity extends AppCompatActivity {
         setPreiewSize(camera, MODEL);
         parameters.setPictureSize(mPrewidthT, mPreHeightT);
         parameters.setPreviewSize(mPrewidthP, mPreHeightP);
+
+//        parameters.setPictureSize(640, 480);
+//        parameters.setPreviewSize(640, 480);
+
         parameters.setPictureFormat(PixelFormat.JPEG); // 设置照片格式
         parameters.setJpegQuality(100);
         camera.setParameters(parameters);
@@ -212,10 +228,11 @@ public abstract class CameraActivity extends AppCompatActivity {
     private void setPreiewSize(Camera camera, CAMERA_MODEL modelflag) {
         List<Camera.Size> preListSize = camera.getParameters().getSupportedPreviewSizes();
         List<Camera.Size> tpListSize = camera.getParameters().getSupportedPictureSizes();
-//       showLog("     "+GsonUtils.toJson(preListSize));
+        showLog("   list presize  " + GsonUtils.toJson(preListSize));
+        showLog("   list photosize  " + GsonUtils.toJson(tpListSize));
         int maxPreSize = 0;
         for (Camera.Size s : preListSize) {
-            if (((float) s.width / s.height) == ((modelflag == CAMERA_MODEL.MODEL_16_9) ? 16f / 9 : 4f / 9) && s.width > maxPreSize) {
+            if (Float.valueOf(String.format("%.1f", ((float) s.width / s.height))) == ((modelflag == CAMERA_MODEL.MODEL_16_9) ? CAMERA_MODEL.MODEL_16_9.getValue() : CAMERA_MODEL.MODEL_4_3.getValue()) && s.width > maxPreSize) {
                 maxPreSize = s.width;
                 mPreHeightP = s.height;
                 mPrewidthP = s.width;
@@ -224,13 +241,14 @@ public abstract class CameraActivity extends AppCompatActivity {
 
         int maxTpSize = 0;
         for (Camera.Size s : tpListSize) {
-            if (((float) s.width) / s.height == ((modelflag == CAMERA_MODEL.MODEL_16_9) ? 16f / 9 : 4f / 9) && s.width > maxTpSize) {
+            if (Float.valueOf(String.format("%.1f", ((float) s.width / s.height))) == ((modelflag == CAMERA_MODEL.MODEL_16_9) ? CAMERA_MODEL.MODEL_16_9.getValue() : CAMERA_MODEL.MODEL_4_3.getValue()) && s.width > maxTpSize) {
                 maxTpSize = s.width;
                 mPreHeightT = s.height;
                 mPrewidthT = s.width;
             }
         }
-//        showLog("preview size width = "+mPrewidthP + "  height = "+mPreHeightP);
+        showLog("preview size width = " + mPrewidthP + "  height = " + mPreHeightP);
+        showLog("take photo size width = " + mPrewidthT + "  height = " + mPreHeightT);
     }
 
 
@@ -325,7 +343,7 @@ public abstract class CameraActivity extends AppCompatActivity {
         }
     }
 
-    protected void playSystemSound(){
+    protected void playSystemSound() {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
         r.play();

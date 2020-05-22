@@ -10,8 +10,11 @@ import android.os.RemoteException
 import android.view.View
 import com.seatrend.vendor.IInspect
 import com.seatrend.vendor.ServiceLisener
+import com.seatrend.vendor.allinspection.activity.GreenDaoActivity
+import com.seatrend.vendor.allinspection.activity.HandleInspetionActivity
 import com.seatrend.vendor.allinspection.base.BaseActivity
 import com.seatrend.vendor.allinspection.camera.ui.DefinedCameraActivty
+import com.seatrend.vendor.allinspection.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.concurrent.thread
 
@@ -69,7 +72,7 @@ class MainActivity : BaseActivity() {
         bindService(intent, cnnec, Context.BIND_AUTO_CREATE)
     }
 
-    private val     cnnec = object : ServiceConnection {
+    private val cnnec = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
             showLog("onServiceConnected")
             iInspect = IInspect.Stub.asInterface(service)
@@ -105,7 +108,6 @@ class MainActivity : BaseActivity() {
             bindServiceByAidl()
         }
     }
-
 
 
     private fun bindEvent() {
@@ -171,6 +173,10 @@ class MainActivity : BaseActivity() {
                 finish()
             }
         }
+
+        test.setOnClickListener {
+            startActivity(Intent(this,GreenDaoActivity::class.java))
+        }
     }
 
     private val mServiceListener = object : ServiceLisener.Stub() {
@@ -192,9 +198,24 @@ class MainActivity : BaseActivity() {
         override fun serviceSuccess(strSuccess: String) {
             dismissLoadingDialog()
             showLog(strSuccess)
+//            runOnUiThread {
+//                text_search.text = strSuccess
+//            }
+
             runOnUiThread {
-                text_search.text = strSuccess
+                showToast("查询环检信息成功")
             }
+            showLog("1")
+            val intent = Intent()
+            intent.setClass(this@MainActivity, HandleInspetionActivity::class.java)
+            showLog("2")
+            intent.putExtra("hj_send", strSuccess)
+            showLog("3")
+            intent.putExtra("hphm", et_hphm.text.toString())
+            showLog("4")
+            SharedPreferencesUtils.setHJCameSpinerList(strSuccess)
+            showLog("5")
+            startActivity(intent)
         }
     }
 

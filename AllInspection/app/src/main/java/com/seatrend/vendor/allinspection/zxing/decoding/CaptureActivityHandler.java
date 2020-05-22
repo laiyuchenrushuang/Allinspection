@@ -27,10 +27,10 @@ import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+import com.seatrend.vendor.allinspection.zxing.activity.CaptureActivity;
 import com.seatrend.vendor.allinspection.R;
 import com.seatrend.vendor.allinspection.zxing.camera.CameraManager;
 import com.seatrend.vendor.allinspection.zxing.view.ViewfinderResultPointCallback;
-import com.seatrend.xj.electricbicyclesalesystem.zxing.activity.CaptureActivity;
 
 
 import java.util.Vector;

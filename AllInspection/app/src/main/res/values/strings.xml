@@ -3,4 +3,7 @@
     <string name="second_step">将合格证的二维码放入框内，即可自动扫描</string>
     <string name="ok">确定</string>
     <string name="loading">数据加载中...</string>
+    <string name="authority">com.seatrend.vendor.allinspection</string>
+    <string name="hj_result">环检结论：%1$s</string>
+    <string name="zp_result">已录入</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.seatrend.vendor.allinspection.camera.ui;
 
+import android.content.Intent;
 import android.hardware.Camera;
 import android.media.MediaRecorder;
 import android.media.Ringtone;
@@ -10,17 +11,23 @@ import android.os.Environment;
 import android.os.SystemClock;
 import android.view.*;
 import android.widget.ImageView;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.seatrend.vendor.allinspection.R;
+import com.seatrend.vendor.allinspection.activity.ShowPictureActivity;
 import com.seatrend.vendor.allinspection.base.Constants;
 import com.seatrend.vendor.allinspection.utils.BitmapUtils;
+import com.seatrend.vendor.allinspection.utils.CalenderUtils;
 import com.seatrend.vendor.allinspection.utils.CheckUtil;
 import com.seatrend.xj.electricbicyclesalesystem.http.thread.ThreadPoolManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by ly on 2020/4/26 13:42
@@ -31,12 +38,24 @@ public class DefinedCameraActivty extends CameraActivity {
     public ImageView btn_capture;
     @BindView(R.id.change_camera)
     public ImageView change_camera;
+    @BindView(R.id.time)
+    public TextView time;
 
 
     private SurfaceHolder mSurfaceHolder;
 
     MediaRecorder mMediaRecorder;
     private boolean isRecording;//正在录制
+
+    int i = 0;
+    private TimerTask timerTask = new TimerTask() {
+        @Override
+        public void run() {
+            runOnUiThread(() -> {
+                time.setText(CalenderUtils.countTime(i++));
+            });
+        }
+    };
     //点击回调
     private Camera.ShutterCallback shutterCallback = () -> {
 
@@ -65,19 +84,19 @@ public class DefinedCameraActivty extends CameraActivity {
 //            bitmap.recycle();
 
         //方案1.1  压缩和文件一并生成(1.5s左右的处理时间)
-        showLog(BitmapUtils.compressImage(BitmapUtils.getSmallBitmap(photoFile.getPath()), 200, 100, photoFile));
+//        showLog(BitmapUtils.compressImage(BitmapUtils.getSmallBitmap(photoFile.getPath()), 200, 100, photoFile));
 
         //方案二 Luban
 //            Luban.with(this).load(photoFile).ignoreBy(100).setTargetDir(photoFile.getParentFile().getPath()).setRenameListener(filePath -> photoFile.getName().replace(".jpg","luban.jpg")).launch();
 
         long t2 = System.currentTimeMillis();
         showLog(t2 + "  dis = " + (t2 - t1));
-//            showLog("newPath = " + newPath);
-//            Intent intent = getIntent();
-//            intent.putExtra("photo_path", newPath);
-//            intent.putExtra("photo_path", photoFile.getPath());
-//            intent.setClass(this, ShowPictureActivity.class);
-//            startActivity(intent);
+        showLog("photo_path  = " + photoFile.getPath());
+
+        Intent intent = getIntent();
+        intent.putExtra("photo_path", photoFile.getPath());
+        intent.setClass(this, ShowPictureActivity.class);
+        startActivity(intent);
     }
 
 
@@ -88,6 +107,14 @@ public class DefinedCameraActivty extends CameraActivity {
         ButterKnife.bind(this);
         initView();
         bindEvent();
+        initTimeData();
+    }
+
+
+
+    private void initTimeData() {
+        Timer t = new Timer();
+        t.schedule(timerTask, 1000, 1000);
     }
 
     private void initCamera() {
@@ -133,6 +160,10 @@ public class DefinedCameraActivty extends CameraActivity {
             mMediaRecorder.setVideoEncodingBitRate(1 * 1024 * 1024 * 100);
             // TODO: 2016/10/20 临时写个文件地址, 稍候该!!!
 
+            File videoFile = new File(Constants.Companion.getVIDEO_PATH());
+            if (!videoFile.exists()) {
+                videoFile.mkdirs();
+            }
             mMediaRecorder.setOutputFile(Constants.Companion.getVIDEO_PATH() + SystemClock.currentThreadTimeMillis() + ".mp4");
             mMediaRecorder.setPreviewDisplay(mSurfaceHolder.getSurface());
             //解决录制视频, 播放器横向问题
@@ -157,13 +188,18 @@ public class DefinedCameraActivty extends CameraActivity {
 
     private void bindEvent() {
         btn_capture.setOnClickListener(v -> {
-//            tabkePic();
-//            playSystemSound();
-            startRecord();
+            tabkePic();
+            playSystemSound();
+//            BitmapUtils.compressImage(BitmapUtils.getSmallBitmap("/storage/emulated/0/AllInspect/CAMERA_PICTRUE/IMG_20200515_113835_1.jpg"), 200, 100, new File("/storage/emulated/0/AllInspect/CAMERA_PICTRUE/IMG_20200515_113835_1.jpg"));
+
+//            startRecord();
         });
 
         btn_capture.setOnLongClickListener(v -> {
             startRecord();
+//            initTimeData();
+            i = 0;
+            time.setVisibility(View.VISIBLE);
             return false;
         });
 
@@ -171,7 +207,8 @@ public class DefinedCameraActivty extends CameraActivity {
             if (isRecording) {
                 mMediaRecorder.stop();
             }
-
+            timerTask.cancel();
+            time.setVisibility(View.GONE);
             return false;
         });
 

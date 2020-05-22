@@ -1,4 +1,4 @@
-package com.seatrend.xj.electricbicyclesalesystem.zxing.activity
+package com.seatrend.vendor.allinspection.zxing.activity;
 
 import android.Manifest
 import android.annotation.SuppressLint

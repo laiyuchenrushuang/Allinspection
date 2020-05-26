@@ -9,6 +9,7 @@ import com.mydemo.camerax.enums.CameraFace
 import com.mydemo.camerax.enums.CameraSizeFor
 import com.mydemo.camerax.listener.CameraOpenListener
 import com.mydemo.camerax.listener.CameraPhotoListener
+import com.seatrend.vendor.allinspection.activity.ShowPictureActivity
 import com.seatrend.vendor.allinspection.base.BaseActivity
 import com.seatrend.vendor.allinspection.utils.BitmapUtils
 import com.seatrend.vendor.allinspection.utils.GsonUtils
@@ -63,6 +64,11 @@ class CameraXActivity : BaseActivity() {
                     val photoFile = BitmapUtils.saveCameraPhoto(data)
                     showLog("photoFile : ${photoFile.path}")
                     cv.resumePreview()
+                    intent.setClass(this@CameraXActivity, ShowPictureActivity::class.java)
+                    intent.putExtra("zpmc", "拍照详情")
+                    intent.putExtra("photo_path", photoFile.path)
+                    startActivity(intent)
+
                 }
 
                 override fun onCaptureFailed(throwable: Throwable?) {

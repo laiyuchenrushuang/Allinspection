@@ -6,4 +6,33 @@
     <string name="authority">com.seatrend.vendor.allinspection</string>
     <string name="hj_result">环检结论：%1$s</string>
     <string name="zp_result">已录入</string>
+
+    <!--Camera start-->
+    <string name="main_menu_camera">Open Camera</string>
+    <string name="main_camera_option">Select your camera option:</string>
+    <string name="main_camera_option_camera1_only">Camera1 only</string>
+    <string name="main_camera_option_camera2_only">Camera2 only</string>
+    <string name="main_camera_option_camera">According to platform</string>
+    <string name="main_preview_option">Select your camera preview option:</string>
+    <string name="main_preview_option_texture_only">TextureView only</string>
+    <string name="main_preview_option_surface_only">SurfaceView only</string>
+    <string name="main_preview_option_platform">According to platform</string>
+    <string name="main_video_duration">Max video duration in second:</string>
+
+    <string name="camera_drawer_title">Camera Configuration</string>
+    <string name="camera_drawer_shutter">Enable shutter</string>
+    <string name="camera_drawer_focus">Enable auto focus mode</string>
+    <string name="camera_drawer_flash">Enable flash</string>
+    <string name="camera_drawer_touch_zoom">Enable touch zoom</string>
+    <string name="camera_drawer_touch_focus">Enable touch focus</string>
+    <string name="camera_drawer_preview_sizes">Get Preview Sizes</string>
+    <string name="camera_drawer_picture_sizes">Get Picture Sizes</string>
+    <string name="camera_drawer_video_sizes">Get Video Sizes</string>
+    <string name="camera_drawer_switch_camera">Switch Camera</string>
+
+    <string name="camera_main_video">Video</string>
+    <string name="camera_main_picture">Picture</string>
+    <string name="appbar_scrolling_view_behavior">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+
+    <!--Camera end-->
 </resources>

@@ -10,9 +10,9 @@ import android.os.RemoteException
 import android.view.View
 import com.seatrend.vendor.IInspect
 import com.seatrend.vendor.ServiceLisener
-import com.seatrend.vendor.allinspection.activity.GreenDaoActivity
 import com.seatrend.vendor.allinspection.activity.HandleInspetionActivity
 import com.seatrend.vendor.allinspection.base.BaseActivity
+import com.seatrend.vendor.allinspection.camera.cameraX.CameraXActivity
 import com.seatrend.vendor.allinspection.camera.ui.DefinedCameraActivty
 import com.seatrend.vendor.allinspection.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -175,7 +175,8 @@ class MainActivity : BaseActivity() {
         }
 
         test.setOnClickListener {
-            startActivity(Intent(this,GreenDaoActivity::class.java))
+//            startActivity(Intent(this,GreenDaoActivity::class.java))
+            startActivity(Intent(this,CameraXActivity::class.java))
         }
     }
 

@@ -34,4 +34,6 @@
     <color name="line_color">#979797</color>
     <color name="line">#dddddd</color>
     <color name="blue">#006EBF</color>
+
+    <color name="ic_launcher_background">#FAFAFA</color>
 </resources>

@@ -72,6 +72,7 @@
         <activity android:name=".activity.HandleInspetionActivity"/>
         <activity android:name=".activity.PhotoCollectionActivty"/>
         <activity android:name=".activity.GreenDaoActivity" android:configChanges="keyboardHidden" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".camera.cameraX.CameraXActivity"/>
     </application>
 
 </manifest>

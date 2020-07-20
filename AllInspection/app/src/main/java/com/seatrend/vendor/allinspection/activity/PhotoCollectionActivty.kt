@@ -12,8 +12,7 @@ import com.seatrend.vendor.allinspection.R
 import com.seatrend.vendor.allinspection.adapter.CheckDataPhotoAdapter
 import com.seatrend.vendor.allinspection.base.BaseActivity
 import com.seatrend.vendor.allinspection.base.Constants
-import com.seatrend.vendor.allinspection.entity.CameSpinner
-import com.seatrend.vendor.allinspection.entity.ShareEntity
+import com.seatrend.vendor.allinspection.entity.VehisPara
 import com.seatrend.vendor.allinspection.utils.GsonUtils
 import com.seatrend.vendor.allinspection.utils.SharedPreferencesUtils
 import kotlinx.android.synthetic.main.activity_photo.*
@@ -22,7 +21,7 @@ import java.io.File
 
 class PhotoCollectionActivty : BaseActivity(), CheckDataPhotoAdapter.itemOnClickListener,
     CheckDataPhotoAdapter.itemDeleteClickListener {
-    var allPhoto = ArrayList<ShareEntity.PhotoListBean>()
+    var allPhoto = ArrayList<VehisPara.ZpBean>()
     private var photoPosition = 0
     private var imgFile: File? = null
     private val CAMERA_REQUEST_CODE = 20
@@ -48,13 +47,17 @@ class PhotoCollectionActivty : BaseActivity(), CheckDataPhotoAdapter.itemOnClick
 
         val list_hj = SharedPreferencesUtils.getHJCameSpinerList()
 
-        getDefaultPhoto()
-        for (db in list_hj) {
-            val entity = ShareEntity.PhotoListBean()
-            entity.zplx = db.dmz
-            entity.zpmc = db.dmsm1
-            allPhoto.add(entity)
+//        getDefaultPhoto()
+        if(list_hj.zp != null && list_hj.zp.size >0){
+            for (db in list_hj.zp) {
+                val entity = VehisPara.ZpBean()
+                entity.zplx = db.dmz
+                entity.zpmc = db.dmsml
+                entity.isSfbp = db.isSfbp
+                allPhoto.add(entity)
+            }
         }
+
         m_recycler_view.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
         mCheckDataPhotoAdapter = CheckDataPhotoAdapter(this)
         mCheckDataPhotoAdapter!!.setPhotoType(allPhoto)
@@ -82,17 +85,17 @@ class PhotoCollectionActivty : BaseActivity(), CheckDataPhotoAdapter.itemOnClick
 
     private fun getDefaultPhoto() {
 
-        val entity = ShareEntity.PhotoListBean()
+        val entity = VehisPara.ZpBean()
         entity.zpmc = "车辆识别代号照片"
         entity.zplx = "0113"
         allPhoto.add(entity)
 
-        val entity1 = ShareEntity.PhotoListBean()
+        val entity1 = VehisPara.ZpBean()
         entity1.zpmc = "驾驶人座椅汽车安全带"
         entity1.zplx = "0157"
         allPhoto.add(entity1)
 
-        val entity2 = ShareEntity.PhotoListBean()
+        val entity2 = VehisPara.ZpBean()
         entity2.zpmc = "车辆左前方斜视45°照片"
         entity2.zplx = "0111"
         allPhoto.add(entity2)
@@ -100,7 +103,7 @@ class PhotoCollectionActivty : BaseActivity(), CheckDataPhotoAdapter.itemOnClick
 
     private fun getPicFromCamera() {
         //用于保存调用相机拍照后所生成的文件
-        val tempFile = File(Constants.Companion.PICTRUE_PATH)//
+        val tempFile = File(Constants.PICTRUE_PATH)//
         val imageUri: Uri
         if (!tempFile.exists()) {
             tempFile.mkdirs()

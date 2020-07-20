@@ -1,138 +1,82 @@
 package com.seatrend.vendor.allinspection
 
+//import com.seatrend.vendor.allinspection.camera.cameraX.CameraXActivity
 import android.app.Activity
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
-import android.os.IBinder
 import android.os.RemoteException
 import android.view.View
 import com.seatrend.vendor.IInspect
 import com.seatrend.vendor.ServiceLisener
 import com.seatrend.vendor.allinspection.activity.HandleInspetionActivity
 import com.seatrend.vendor.allinspection.base.BaseActivity
-import com.seatrend.vendor.allinspection.camera.cameraX.CameraXActivity
+import com.seatrend.vendor.allinspection.base.Constants
 import com.seatrend.vendor.allinspection.camera.ui.DefinedCameraActivty
+import com.seatrend.vendor.allinspection.entity.HJQuestEntity
+import com.seatrend.vendor.allinspection.entity.JKLX
+import com.seatrend.vendor.allinspection.entity.SendHJEntity
+import com.seatrend.vendor.allinspection.entity.ShareEntity
+import com.seatrend.vendor.allinspection.utils.Base64Utils
+import com.seatrend.vendor.allinspection.utils.GsonUtils
 import com.seatrend.vendor.allinspection.utils.SharedPreferencesUtils
+import com.seatrend.vendor.allinspection.zxing.activity.CaptureActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.concurrent.thread
 
 class MainActivity : BaseActivity() {
 
-    private val E_INSPECTION = 0x1//环检requestion 标记
-
     private var iInspect: IInspect? = null
+    private val E_INSPECTION = 0x1//环检requestion 标记
+    private var aidlManager: AIDLManager? = null
+
 
     override fun initView() {
         setPageTitle("机动车检验终端")
         appPermissionReq()
-
+        //"com.mapuni.cdcar"
         bindEvent()
+
+//        showLog("GGGG"+Base64Utils.base64Decode("MTE3MDAxMjAwOTkxMjUwMTU", ""))
+        showLog("GGGG = "+Base64Utils.base64Encode(Constants.PDA_USER, ""))
+        showLog("GGGG = "+Base64Utils.reverse(Base64Utils.base64Encode(Constants.PDA_USER, "")))
+
+        showLog("GGGG = "+Base64Utils.reverse(Base64Utils.reverse(Base64Utils.base64Encode(Constants.PDA_USER, ""))))
+        showLog("GGGG ="+Base64Utils.base64Decode(Base64Utils.reverse(Base64Utils.reverse(Base64Utils.base64Encode(Constants.PDA_USER, ""))), ""))
     }
 
     override fun onResume() {
         super.onResume()
-        bindServiceByAidl() //aidl
-        registerListener(mServiceListener)
-    }
-
-    private fun registerListener(listener: ServiceLisener.Stub) {
-
-        if (!checkBinderIsAlive()) {
-            showLog("Binder 已死")
-            return
-        }
-
-        thread {
-            while (true) {
-                if (iInspect == null) {
-                    showLog("iInspect == null")
-                    continue
-                }
-                iInspect!!.registerListener(listener)
-                break
-            }
+        if (aidlManager == null) {
+            aidlManager = AIDLManager.getIncetance().bindService(this)
         }
     }
-
-    //binder 是否存活状态
-    private fun checkBinderIsAlive(): Boolean {
-        if (iInspect != null && iInspect!!.asBinder().isBinderAlive) {
-            return true
-        }
-        return false
-    }
-
-    //只调用一次哦  不然 一直重新绑定
-    @Synchronized
-    private fun bindServiceByAidl() {
-        val intent = Intent("com.seatrend.vendor.respond_message")
-        intent.setPackage("com.seatrend.environment.inspection")
-        bindService(intent, cnnec, Context.BIND_AUTO_CREATE)
-    }
-
-    private val cnnec = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            showLog("onServiceConnected")
-            iInspect = IInspect.Stub.asInterface(service)
-
-            try {
-                // 注册死亡代理
-                if (iInspect != null) {
-                    service.linkToDeath(mDeathRecipient, 0)
-                }
-            } catch (e: RemoteException) {
-                e.printStackTrace()
-            }
-
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            showLog("onServiceDisconnected")
-        }
-    }
-
-
-    /**
-     * 监听Binder是否死亡
-     */
-    private val mDeathRecipient = object : IBinder.DeathRecipient {
-        override fun binderDied() {
-            if (iInspect == null) {
-                return
-            }
-            iInspect!!.asBinder().unlinkToDeath(this, 0)
-            iInspect = null
-            //重新绑定
-            bindServiceByAidl()
-        }
-    }
-
 
     private fun bindEvent() {
         bb.setOnClickListener {
             startActivity(Intent(this, DefinedCameraActivty::class.java))
         }
 
+        //启动小工具
         ll_hj.setOnClickListener {
             showToast("开启环检程序")
             try {
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.component =
                     ComponentName(
-                        "com.seatrend.environment.inspection",
-                        "com.seatrend.environment.inspection.RequestAction"
+                        Constants.APP_PACKAGE.YU_TONG_PACKAGE,
+                        Constants.APP_PACKAGE.YU_TONG_UI
+//                        Constants.APP_PACKAGE.DEFAULT,
+//                        Constants.APP_PACKAGE.DEFAULT_UI
                     )
-                intent.putExtra(
-                    "aj_send", "数据状态正常 :\n"
-                            + "车牌号码 ：川A 45853\n"
-                            + "所有人姓名：张三\n"
-                            + "所有人身份证：5105211800366...\n"
-                            + "车身颜色：白\n"
-                            + "整车编码：L5224452221...\n"
-                            + "其他信息.....\n"
-                )
+
+                //不牵涉业务 只传身份证和 接口类型
+                val entity = ShareEntity()
+                entity.sfxx = Base64Utils.reverse(Base64Utils.base64Encode(Constants.PDA_USER,"utf-8"))
+                val sjnr = ShareEntity.SJNR()
+                sjnr.jklx = JKLX.REQUEST_WIDGET.ordinal
+                entity.sjnr = sjnr
+                intent.putExtra("aj_send", GsonUtils.toJson(entity))
+                showLog(GsonUtils.toJson(entity))
                 startActivityForResult(intent, E_INSPECTION)
             } catch (e: Exception) {
                 showToast("环检程序启动失败，查看是否安装环检程序！")
@@ -148,15 +92,54 @@ class MainActivity : BaseActivity() {
 
         bt_search.setOnClickListener {
 
+            iInspect = aidlManager!!.build()
             if (iInspect == null) {
                 showLog(" iInspect == null")
+                iInspect = aidlManager!!.build()
                 return@setOnClickListener
             }
             showLoadingDialog()
             thread {
                 try {
                     showLog(" sendVehInfo 正常请求")
-                    iInspect!!.sendVehInfo(et_hphm.text.toString(), mServiceListener)
+
+                    //数据封装
+                    /**
+                     *
+                    {
+                    "clsbdh":"01",
+                    "hplb":"",
+                    "hphm":"川A 12345",
+                    "xh":"01",
+                    "jyjgbh":"01",
+                    "RLZL":"A",
+                    "SFXNY":"",
+                    "XNYZL":""
+                    }
+                     */
+
+                    val entity = SendHJEntity()
+                    val sjnr = SendHJEntity.SJNR()
+                    sjnr.clsbdh = Constants.CLSBDH
+                    sjnr.hphm = et_hphm.text.toString()
+                    sjnr.xh = "01"
+                    sjnr.jyjgbh = "01"
+                    sjnr.rlzl = "A"
+                    sjnr.hplb = "1"
+                    sjnr.jylb = "02"
+
+                    sjnr.xnyzl = "A"
+                    sjnr.sfxny = "1"
+                    sjnr.yxqz = "1"
+                    sjnr.jklx = JKLX.REQUEST_TASK.ordinal
+                    entity.sfxx=Base64Utils.reverse(Base64Utils.base64Encode(Constants.PDA_USER,"utf-8"))
+
+                    entity.sjnr = sjnr
+
+                    val teststr = "{\"sfxx\":\"zEDNzQjMzADM5kTM3ATMwETN\",\"sjnr\":{\"clsbdh\":\"LFV2A2157A3067571\",\"hphm\":\"川AYY520\",\"hplb\":\"02\",\"jklx\":2,\"jyjgbh\":\"5100000114\",\"jylb\":\"01\",\"rlzl\":\"A\",\"sfxny\":\"2\",\"xh\":\"51010010386319\",\"xnyzl\":\"\",\"yxqz\":\"2020-09-30\"}}"
+
+//                    iInspect!!.sendVehInfo(GsonUtils.toJson(entity), mServiceListener)
+                    iInspect!!.sendVehInfo(teststr, mServiceListener)
                 } catch (e: RemoteException) {
                     e.printStackTrace()
                     dismissLoadingDialog()
@@ -169,14 +152,24 @@ class MainActivity : BaseActivity() {
             if (ll_view2.visibility == View.VISIBLE) {
                 ll_view2.visibility = View.GONE
                 ll_view1.visibility = View.VISIBLE
-            } else {
+
+            } else if (ll_view1.visibility == View.VISIBLE) {
                 finish()
             }
         }
 
         test.setOnClickListener {
-//            startActivity(Intent(this,GreenDaoActivity::class.java))
-            startActivity(Intent(this,CameraXActivity::class.java))
+            //            startActivity(Intent(this,GreenDaoActivity::class.java))
+//            startActivity(Intent(this, CameraXActivity::class.java))
+        }
+        greendao.setOnClickListener {
+            //            startActivity(Intent(this, GreenDaoActivity::class.java))
+        }
+        ll_test.setOnClickListener {
+            startActivity(Intent(this, TestActivity::class.java))
+        }
+        qCode.setOnClickListener {
+            startActivity(Intent(this, CaptureActivity::class.java))
         }
     }
 
@@ -206,6 +199,7 @@ class MainActivity : BaseActivity() {
             runOnUiThread {
                 showToast("查询环检信息成功")
             }
+            val entity = GsonUtils.gson(strSuccess,HJQuestEntity::class.java)
             showLog("1")
             val intent = Intent()
             intent.setClass(this@MainActivity, HandleInspetionActivity::class.java)
@@ -214,7 +208,7 @@ class MainActivity : BaseActivity() {
             showLog("3")
             intent.putExtra("hphm", et_hphm.text.toString())
             showLog("4")
-            SharedPreferencesUtils.setHJCameSpinerList(strSuccess)
+            SharedPreferencesUtils.setHJCameSpinerList(GsonUtils.toJson(entity.sjnr))
             showLog("5")
             startActivity(intent)
         }
@@ -233,12 +227,47 @@ class MainActivity : BaseActivity() {
         }
     }
 
+//    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+//        when (event!!.action) {
+//            KeyEvent.KEYCODE_BACK -> {
+//                if (iInspect != null) {
+//                    iInspect!!.close()
+//                }
+//            }
+//        }
+//        return super.dispatchKeyEvent(event)
+//    }
+
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(cnnec)
-        if (iInspect != null) {
-//            iInspect!!.unRegisterListener(mServiceListener) //取消监听
+        if (aidlManager!!.build() != null) {
+            val entity = SendHJEntity()
+            val sjnr = SendHJEntity.SJNR()
+            entity.sfxx=Base64Utils.reverse(Base64Utils.base64Encode(Constants.PDA_USER,"utf-8"))
+            sjnr.jklx = 99
+            entity.sjnr = sjnr
+            aidlManager!!.build()!!.sendVehInfo(GsonUtils.toJson(entity), object : ServiceLisener.Stub() {
+                override fun currentState(state: Int) {
+                }
+
+                override fun serviceError(strError: String?) {
+                }
+
+                override fun serviceSuccess(strSuccess: String?) {
+                }
+
+            }) //取消监听
         }
+
+        aidlManager!!.unbindService(this)
+//        if (iInspect != null) {
+//            iInspect = null
+//        }
+        aidlManager!!.setThreadFlag(false)
+        if (aidlManager != null) {
+            aidlManager = null
+        }
+        android.os.Process.killProcess(android.os.Process.myPid())
     }
 
     override fun getLayout(): Int {

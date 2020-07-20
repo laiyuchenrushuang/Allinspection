@@ -10,4 +10,5 @@ interface IInspect {
   void sendVehInfo(String sendJsonData,ServiceLisener servicelisener);
   void sendDataToServer(String sendJsonData,ServiceLisener servicelisener);
   void getResultByServer(String sendJsonData,ServiceLisener servicelisener);
+
 }

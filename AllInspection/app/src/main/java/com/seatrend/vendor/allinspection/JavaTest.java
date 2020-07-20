@@ -2,13 +2,12 @@ package com.seatrend.vendor.allinspection;
 
 
 import android.annotation.SuppressLint;
-import android.os.SystemClock;
-import com.seatrend.vendor.allinspection.camera.ui.CameraActivity;
-import com.seatrend.vendor.allinspection.utils.StringUtils;
-import net.sf.json.xml.XMLSerializer;
-import org.apache.xalan.xsltc.util.IntegerArray;
+import com.seatrend.vendor.allinspection.entity.TestEntity;
+import com.seatrend.vendor.allinspection.utils.Base64Utils;
+import com.seatrend.vendor.allinspection.utils.GsonUtils;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,7 +15,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by ly on 2020/4/8 14:47
  */
 public class JavaTest {
-    private static int i = 0;
 
     public static void main(String[] args) {
 
@@ -56,97 +54,51 @@ public class JavaTest {
 //        XMLSerializer xmlSerializer = new XMLSerializer();
 //        String result = xmlSerializer.read(xmlStr).toString();
 
+        String newStr="gradle".substring(0, 1).toUpperCase()+"gradle".replaceFirst("\\w","");
+        String methodStr="get"+newStr;
+//        Method method1 = getClass().getMethod(methodStr, null);
+
+        TestEntity t = new TestEntity("001","boy","99",false);
+        TestEntity t1 = new TestEntity("002","girl","88",false);
+        TestEntity t2 = new TestEntity("003","boy","89",false);
+        TestEntity t3 = new TestEntity("004","boy","77",true);
+        TestEntity t4 = new TestEntity("005","girl","50",true);
+        TestEntity t43 = new TestEntity("005","girl","65",true);
+        TestEntity t41 = new TestEntity("005","boy","53",true);
+        TestEntity t42 = new TestEntity("005","boy","54",false);
+        TestEntity t5 = new TestEntity("006","girl","65",false);
+
+        ArrayList<TestEntity> list = new ArrayList<>();
+        list.add(t4);
+        list.add(t41);
+        list.add(t42);
+        list.add(t43);
+        list.add(t2);
+        list.add(t1);
+        list.add(t);
+        list.add(t3);
+        list.add(t5);
+        Collections.sort(list);
+        System.out.println(GsonUtils.toJson(list));
+//        list.sort(Comparator.comparing(TestEntity::getSfbp).thenComparing(TestEntity::getGrade).thenComparing(TestEntity::getScore));
+        System.out.println("------------------------------");
+//        System.out.println(GsonUtils.toJson(list));
 //
-//        System.out.println(CAMERA_MODEL.MODEL_4_3.getValue());
-//        System.out.println(CAMERA_MODEL.MODEL_16_9.getValue());
+//        System.out.println(GsonUtils.toJson(SortUtil.compareToList(list)));
+//        System.out.println(Integer.valueOf("005"));
 
+        String a = "A009";
+        String s = a.replaceAll("[^0-9]","");
 
-        //thread c
-        Thread c = new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                for (; ; ) {
-                    showLog(Thread.currentThread().toString() + "  " + i++);
+        System.out.println(s);
 
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
+        System.out.println("------------------------------");
 
+        int A = -1;int B = 6;
 
-        //thread b
-        Thread b = new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                for (; ; ) {
-                    showLog(Thread.currentThread().toString() + "  " + i++);
-
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-
-
-        //thread a
-        Thread a = new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                for (; ; ) {
-                    showLog(Thread.currentThread().toString() + "  " + i++);
-
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-//        Lock lock = new ReentrantLock();
-//        Object obj = new Object();
-//        MyRunable mr = null;
-//        for (int i = 0; i < 5; i++) {
-//            synchronized (obj) {
-//                lock.lock();
-//                mr = new MyRunable(i, lock);
-//                new Thread(mr).start();
-//            }
-//        }
-
-//        MyThread mt = new MyThread();
-//        MyThread mt1 = new MyThread();
-//        new Thread(mt).start();
-//        new Thread(mt1).start();
-//        new Thread(mr).start();
-//        new Thread(mr).start();
-//        new Thread(mr).start();
-
-//        new Thread(mt).start();
-
-//        SyncThread syncThread = new SyncThread(1);
-//        SyncThread syncThread1 = new SyncThread(2);
-//        Thread thread1 = new Thread(syncThread, "SyncThread1");
-//        Thread thread2 = new Thread(syncThread1, "SyncThread2");
-//        Thread thread3 = new Thread(syncThread, "SyncThread3");
-//        Thread thread4 = new Thread(syncThread1, "SyncThread4");
-//        thread1.start();
-//        thread2.start();
-//        thread3.start();
-//        thread4.start();
-
-        System.out.println(SystemClock.uptimeMillis());
-        System.out.println(System.currentTimeMillis());
+        float r = (A*1.0f/B)<0?(A*1.0f/B)-0.5f:(A*1.0f/B)+0.5f;
+//        float r = ((A+B)/2.0f)/B;
+        System.out.println(Base64Utils.base64Decode(Base64Utils.reverse("WDExMzIxMTEyOTkxMjgyMTE0"),""));
 
     }
 

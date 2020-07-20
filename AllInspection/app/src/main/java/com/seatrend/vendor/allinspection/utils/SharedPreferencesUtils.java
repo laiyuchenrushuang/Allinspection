@@ -3,9 +3,9 @@ package com.seatrend.vendor.allinspection.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import com.seatrend.vendor.allinspection.base.Constants;
 import com.seatrend.vendor.allinspection.MyApplication;
-import com.seatrend.vendor.allinspection.entity.CameSpinner;
+import com.seatrend.vendor.allinspection.base.Constants;
+import com.seatrend.vendor.allinspection.entity.HJQuestEntity;
 import com.seatrend.vendor.allinspection.entity.ShareEntity;
 
 import java.util.ArrayList;
@@ -45,12 +45,12 @@ public class SharedPreferencesUtils {
      * 获取环检照片spinner
      * @return UserInfo
      */
-    public static ArrayList<CameSpinner> getHJCameSpinerList(){
+    public static HJQuestEntity.SjnrBean getHJCameSpinerList(){
         String data= MyApplication.Companion.getMyApplicationContext().getSharedPreferences(Constants.Companion.getSHARE_PRE_KEY(),Context.MODE_PRIVATE).
                 getString(Constants.Companion.getE_INSPECTION_PHOTO(),"");
         if(StringUtils.isNull(data).equals("")){
-            return null;
-        }else return GsonUtils.jsonToArrayList(data,CameSpinner.class);
+            return new HJQuestEntity.SjnrBean();
+        }else return GsonUtils.gson(data, HJQuestEntity.SjnrBean.class);
     }
     /**
      * 写入all照片spinner
@@ -64,11 +64,11 @@ public class SharedPreferencesUtils {
      * 获取all照片spinner
      * @return UserInfo
      */
-    public static ArrayList<ShareEntity.PhotoListBean> getAllCameSpinerList(){
+    public static ArrayList<ShareEntity.SJNR.ZP> getAllCameSpinerList(){
         String data= MyApplication.Companion.getMyApplicationContext().getSharedPreferences(Constants.Companion.getSHARE_PRE_KEY(),Context.MODE_PRIVATE).
                 getString(Constants.Companion.getALL_PHOTO(),"");
         if(StringUtils.isNull(data).equals("")){
             return null;
-        }else return GsonUtils.jsonToArrayList(data, ShareEntity.PhotoListBean.class);
+        }else return GsonUtils.jsonToArrayList(data, ShareEntity.SJNR.ZP.class);
     }
 }

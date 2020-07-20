@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.seatrend.environment.inspection.R;
 import com.seatrend.environment.inspection.ShowPictureActivity;
-import com.seatrend.environment.inspection.entity.ShareEntity;
+import com.seatrend.environment.inspection.entity.VehisPara;
 
 import java.util.ArrayList;
 
@@ -23,9 +23,9 @@ import java.util.ArrayList;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyHolder> {
 
     private Context mContext;
-    private ArrayList<ShareEntity.PhotoListBean> list;
+    private ArrayList<VehisPara.ZP> list;
 
-    public PhotoAdapter(Context ctx, ArrayList<ShareEntity.PhotoListBean> data) {
+    public PhotoAdapter(Context ctx, ArrayList<VehisPara.ZP> data) {
         this.mContext = ctx;
         this.list = data;
     }
@@ -64,7 +64,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.MyHolder> {
             bindEvent();
         }
 
-        public void initItemView(ShareEntity.PhotoListBean s) {
+        public void initItemView(VehisPara.ZP s) {
             Glide.with(mContext).load(s.getZplj()).centerCrop().into(iv);
             tv_zpmc.setText(s.getZpmc());
         }

@@ -1,8 +1,6 @@
 package com.seatrend.vendor.allinspection.activity
 
-import android.os.SystemClock
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.mydemo.mydblib.controller.PerSonController
 import com.mydemo.mydblib.entity.PersonInfor
@@ -10,6 +8,7 @@ import com.seatrend.vendor.allinspection.R
 import com.seatrend.vendor.allinspection.adapter.PersonAdapter
 import com.seatrend.vendor.allinspection.base.BaseActivity
 import com.seatrend.vendor.allinspection.utils.StringUtils
+import com.seatrend.vendor.allinspection.utils.cache.ACache
 import kotlinx.android.synthetic.main.activity_greendao.*
 
 /**
@@ -20,10 +19,19 @@ class GreenDaoActivity : BaseActivity(), View.OnClickListener {
 
     var id = 0L
     var personAdapter: PersonAdapter? = null
+    var cache :ACache ?=null
     override fun initView() {
         setPageTitle("GreenDao运用")
+        cache = ACache.get(this)
+        initData()
         initRecycleView()
         bindEvent()
+    }
+
+    private fun initData() {
+        person_number.setText(cache!!.getAsString("no"))
+        person_name.setText(cache!!.getAsString("name"))
+        person_sex.setText(cache!!.getAsString("sex"))
     }
 
     private fun bindEvent() {
@@ -36,7 +44,7 @@ class GreenDaoActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
+        setCache()
         when (v!!.id) {
             R.id.add -> {
                 val entity = getEntity()
@@ -76,6 +84,12 @@ class GreenDaoActivity : BaseActivity(), View.OnClickListener {
             }
         }
 
+    }
+
+    private fun setCache() {
+        cache!!.put("no",person_number.text.toString())
+        cache!!.put("name",person_name.text.toString())
+        cache!!.put("sex",person_sex.text.toString())
     }
 
     private fun getEntity(): PersonInfor? {

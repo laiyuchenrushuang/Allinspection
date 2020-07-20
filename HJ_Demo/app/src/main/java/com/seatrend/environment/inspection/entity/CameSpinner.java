@@ -1,87 +1,136 @@
 package com.seatrend.environment.inspection.entity;
 
+import java.util.List;
+
 /**
- * Created by ly on 2020/5/18 16:54
+ * Created by ly on 2020/5/20 16:26
+
+ {
+ "sfjy":true,
+ "hjcs":"1",
+ "zp":[{
+ "xtlb":"01",
+ "dmlb":"0033",
+ "dmz":"001",
+ "dmsm1":"车身颜色",
+ "sfbp":true,
+ "sfyp":false,
+ "sfhj":true
+ }]
+ }
+
+
+
  */
 public class CameSpinner {
-    private String xtlb;
-    private String dmlb;
-    private String dmz;
-    private String dmsm1;
-    private String dmsm2;
-    private String dmsm3;
-    private Boolean sfbp;
-    private Boolean sfyp;
-    private Boolean sfhj =false; //是否是环检 默认false   true代表是环检的照片列表信息
 
-    public Boolean getSfhj() {
-        return sfhj;
+    /**
+     * sfjy : true
+     * hjcs : 1
+     * zp : [{"xtlb":"01","dmlb":"0033","dmz":"001","dmsm1":"车身颜色","sfbp":true,"sfyp":false,"sfhj":true}]
+     */
+
+    private boolean sfjy;
+    private String hjcs;
+    private List<ZpBean> zp;
+
+    public boolean isSfjy() {
+        return sfjy;
     }
 
-    public void setSfhj(Boolean sfhj) {
-        this.sfhj = sfhj;
-    }
-    public String getXtlb() {
-        return xtlb;
+    public void setSfjy(boolean sfjy) {
+        this.sfjy = sfjy;
     }
 
-    public void setXtlb(String xtlb) {
-        this.xtlb = xtlb;
+    public String getHjcs() {
+        return hjcs;
     }
 
-    public String getDmlb() {
-        return dmlb;
+    public void setHjcs(String hjcs) {
+        this.hjcs = hjcs;
     }
 
-    public void setDmlb(String dmlb) {
-        this.dmlb = dmlb;
+    public List<ZpBean> getZp() {
+        return zp;
     }
 
-    public String getDmz() {
-        return dmz;
+    public void setZp(List<ZpBean> zp) {
+        this.zp = zp;
     }
 
-    public void setDmz(String dmz) {
-        this.dmz = dmz;
-    }
+    public static class ZpBean {
+        /**
+         * xtlb : 01
+         * dmlb : 0033
+         * dmz : 001
+         * dmsm1 : 车身颜色
+         * sfbp : true
+         * sfyp : false
+         * sfhj : true
+         */
 
-    public String getDmsm1() {
-        return dmsm1;
-    }
+        private String xtlb;
+        private String dmlb;
+        private String dmz;
+        private String dmsm1;
+        private boolean sfbp;
+        private boolean sfyp;
+        private boolean sfhj;
 
-    public void setDmsm1(String dmsm1) {
-        this.dmsm1 = dmsm1;
-    }
+        public String getXtlb() {
+            return xtlb;
+        }
 
-    public String getDmsm2() {
-        return dmsm2;
-    }
+        public void setXtlb(String xtlb) {
+            this.xtlb = xtlb;
+        }
 
-    public void setDmsm2(String dmsm2) {
-        this.dmsm2 = dmsm2;
-    }
+        public String getDmlb() {
+            return dmlb;
+        }
 
-    public String getDmsm3() {
-        return dmsm3;
-    }
+        public void setDmlb(String dmlb) {
+            this.dmlb = dmlb;
+        }
 
-    public void setDmsm3(String dmsm3) {
-        this.dmsm3 = dmsm3;
-    }
+        public String getDmz() {
+            return dmz;
+        }
 
-    public Boolean getSfbp() {
-        return sfbp;
-    }
+        public void setDmz(String dmz) {
+            this.dmz = dmz;
+        }
 
-    public void setSfbp(Boolean sfbp) {
-        this.sfbp = sfbp;
-    }
+        public String getDmsm1() {
+            return dmsm1;
+        }
 
-    public Boolean getSfyp() {
-        return sfyp;
-    }
+        public void setDmsm1(String dmsm1) {
+            this.dmsm1 = dmsm1;
+        }
 
-    public void setSfyp(Boolean sfyp) {
-        this.sfyp = sfyp;
+        public boolean isSfbp() {
+            return sfbp;
+        }
+
+        public void setSfbp(boolean sfbp) {
+            this.sfbp = sfbp;
+        }
+
+        public boolean isSfyp() {
+            return sfyp;
+        }
+
+        public void setSfyp(boolean sfyp) {
+            this.sfyp = sfyp;
+        }
+
+        public boolean isSfhj() {
+            return sfhj;
+        }
+
+        public void setSfhj(boolean sfhj) {
+            this.sfhj = sfhj;
+        }
     }
 }

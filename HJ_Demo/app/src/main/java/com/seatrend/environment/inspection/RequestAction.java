@@ -15,34 +15,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonSyntaxException;
 import com.mydemo.mydblib.controller.PerSonController;
-import com.mydemo.mydblib.entity.PersonInforDao;
 import com.seatrend.environment.inspection.adpter.PhotoAdapter;
-import com.seatrend.environment.inspection.entity.ShareEntity;
-import com.seatrend.environment.inspection.service.AIDLService;
+import com.seatrend.environment.inspection.entity.VehisPara;
 import com.seatrend.vendor.IInspect;
 
-import java.security.Permission;
 import java.util.ArrayList;
 
 public class RequestAction extends AppCompatActivity {
 
     Button bt;
     Button hj_send;
+    Button TEST;
     EditText aj_send;
     RecyclerView m_recycler_view;
     PhotoAdapter mPhotoAdapter;
-    ArrayList<ShareEntity.PhotoListBean> photoList = new ArrayList<>();
+    ArrayList<VehisPara.ZP> photoList = new ArrayList<>();
     private IInspect iInspect = null;
 
     @Override
@@ -53,13 +48,12 @@ public class RequestAction extends AppCompatActivity {
         m_recycler_view = findViewById(R.id.m_recycler_view);
         aj_send = findViewById(R.id.aj_send);
         hj_send = findViewById(R.id.hj_send);
+        TEST = findViewById(R.id.TEST);
 
         permissionCheck();
         getData();
         initRecycleView();
         bindevent();
-        showLog(PerSonController.getInstance(this).searchAll());
-
     }
 
     private void permissionCheck() {
@@ -130,16 +124,16 @@ public class RequestAction extends AppCompatActivity {
     private void getData() {
 
         showLog(getIntent().getStringExtra("aj_send"));
-        try {
-            ShareEntity entity = GsonUtils.gson(getIntent().getStringExtra("aj_send"), ShareEntity.class);
-            aj_send.setText(entity.getJscs().toString());
-            if (entity.getPhoto_list().size() > 0) {
-                photoList = (ArrayList<ShareEntity.PhotoListBean>) entity.getPhoto_list();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            showToast(e.getMessage());
-        }
+//        try {
+//            VehisPara entity = GsonUtils.gson(getIntent().getStringExtra("aj_send"), VehisPara.class);
+//            aj_send.setText(getIntent().getStringExtra("aj_send"));
+//            if (entity.getZp().size() > 0) {
+//                photoList = (ArrayList<VehisPara.ZP>) entity.getZp();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            showToast(e.getMessage());
+//        }
 
 
     }
@@ -149,7 +143,15 @@ public class RequestAction extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                String result = "合格";
+                String result = "{\n" +
+                        "\"clsbdh\":\"01\",\n" +
+                        "\"jylsh\":\"01\",\n" +
+                        "\"hplb\":\"01\",\n" +
+                        "\"hphm\":\"川A 12345\",\n" +
+                        "\"jysj\":\"01\",\n" +
+                        "\"hjcs\":\"01\",\n" +
+                        "\"jyjl\":\"1\"\n" +
+                        "}";
                 intent.putExtra("hj_result", result);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -185,13 +187,30 @@ public class RequestAction extends AppCompatActivity {
 //                }
             }
         });
+        TEST.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                intent.setClass(RequestAction.this,TestActivity.class);
+                startActivity(intent);
+//                finish();
+            }
+        });
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(event.getAction() == KeyEvent.ACTION_DOWN){
             Intent intent = new Intent();
-            String result = "合格";
+            String result = "{\n" +
+                    "\"clsbdh\":\"01\",\n" +
+                    "\"jylsh\":\"01\",\n" +
+                    "\"hplb\":\"01\",\n" +
+                    "\"hphm\":\"川A 12345\",\n" +
+                    "\"jysj\":\"01\",\n" +
+                    "\"hjcs\":\"01\",\n" +
+                    "\"jyjl\":\"1\"\n" +
+                    "}";
             intent.putExtra("hj_result", result);
             setResult(RESULT_OK, intent);
             finish();

@@ -54,7 +54,8 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/m_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:overScrollMode="never"
@@ -88,6 +89,15 @@
         android:text="环检主动发送"
         android:textSize="16sp"
         android:visibility="gone" />
+    <Button
+        android:id="@+id/TEST"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hj_exit"
+        android:background="@color/colorPrimary"
+        android:text="TEST"
+        android:textSize="16sp"
+        android:visibility="visible" />
 
     <View
         android:layout_width="match_parent"

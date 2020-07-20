@@ -1,6 +1,7 @@
 package com.seatrend.vendor.allinspection.camera.cameraX
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Point
 import android.util.DisplayMetrics
 import android.view.WindowManager
@@ -9,6 +10,7 @@ import com.mydemo.camerax.enums.CameraFace
 import com.mydemo.camerax.enums.CameraSizeFor
 import com.mydemo.camerax.listener.CameraOpenListener
 import com.mydemo.camerax.listener.CameraPhotoListener
+import com.seatrend.vendor.allinspection.R
 import com.seatrend.vendor.allinspection.activity.ShowPictureActivity
 import com.seatrend.vendor.allinspection.base.BaseActivity
 import com.seatrend.vendor.allinspection.utils.BitmapUtils
@@ -62,7 +64,11 @@ class CameraXActivity : BaseActivity() {
             cv.takePicture(object : CameraPhotoListener {
                 override fun onPictureTaken(data: ByteArray?) {
                     val photoFile = BitmapUtils.saveCameraPhoto(data)
-                    showLog("photoFile : ${photoFile.path}")
+                    val bt: Bitmap = BitmapUtils.getSmallBitmap(photoFile.path)
+                    val bitmap = BitmapUtils.compressImage(bt)
+                    BitmapUtils.saveBitmap(bitmap,photoFile.name)
+
+                        showLog("photoFile : ${photoFile.path}")
                     cv.resumePreview()
                     intent.setClass(this@CameraXActivity, ShowPictureActivity::class.java)
                     intent.putExtra("zpmc", "拍照详情")
@@ -99,6 +105,6 @@ class CameraXActivity : BaseActivity() {
 
 
     override fun getLayout(): Int {
-        return com.seatrend.vendor.allinspection.R.layout.activty_camerax
+        return R.layout.activty_camerax
     }
 }

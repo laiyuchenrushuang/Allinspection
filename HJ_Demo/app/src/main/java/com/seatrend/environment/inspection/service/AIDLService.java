@@ -78,9 +78,12 @@ public class AIDLService extends Service {
 //                        }
 //                    }
 //                }, 3000);
-                List<CameSpinner> list = new ArrayList<>();
+                CameSpinner cameSpinner = new CameSpinner();
+                cameSpinner.setHjcs("1");
+                cameSpinner.setSfjy(true);
+                List<CameSpinner.ZpBean> list = new ArrayList<>();
                 for (int i = 0; i < 5; i++) {
-                    CameSpinner entity = new CameSpinner();
+                    CameSpinner.ZpBean entity = new CameSpinner.ZpBean();
                     entity.setDmz("hj" + i);
                     entity.setSfhj(true);
                     entity.setSfyp(false);
@@ -88,13 +91,12 @@ public class AIDLService extends Service {
                     entity.setDmsm1("环检图片" + i);
                     list.add(entity);
                 }
-                servicelisener.serviceSuccess(GsonUtils.toJson(list));
-                showLog("环检图片 1.2 = "+ GsonUtils.toJson(list));
-                showLog("环检图片 1.2 = "+ sendJsonData);
+                cameSpinner.setZp(list);
+                servicelisener.serviceSuccess(GsonUtils.toJson(cameSpinner));
 
             } catch (Exception e) {
                 e.printStackTrace();
-                showLog("环检图片 Exception"+ e.getMessage());
+                showLog("环检图片 Exception" + e.getMessage());
                 try {
                     servicelisener.serviceError("服务<<-sendVehInfo异常 " + e.getMessage());
                 } catch (RemoteException e1) {
@@ -114,6 +116,11 @@ public class AIDLService extends Service {
             showLog("getResultByServer");
             sendBackClient(sendJsonData);
         }
+
+//        @Override
+//        public void close() {
+//            showLog("close 环检进程");
+//        }
     };
 
     private void sendBackClient(String sendJsonData) {

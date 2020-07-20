@@ -1,7 +1,5 @@
 package com.seatrend.vendor.allinspection.adapter
 
-import java.io.File
-
 /**
  * Created by ly on 2020/5/20 16:06
  */
@@ -9,6 +7,7 @@ import java.io.File
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +18,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.seatrend.vendor.allinspection.R
 import com.seatrend.vendor.allinspection.activity.ShowPictureActivity
-import com.seatrend.vendor.allinspection.entity.ShareEntity
+import com.seatrend.vendor.allinspection.entity.VehisPara
 import java.util.*
 
 /**
@@ -31,14 +30,14 @@ class CheckDataPhotoAdapter(private var mContext: Context? = null) :
         holder.initItemView(data[position])
     }
 
-    private var data = ArrayList<ShareEntity.PhotoListBean>()
+    private var data = ArrayList<VehisPara.ZpBean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
         var view = LayoutInflater.from(mContext).inflate(R.layout.item_check_data_photo_adapter, parent, false)
         return MyViewHolder(view)
     }
 
-    fun setPhotoType(list: ArrayList<ShareEntity.PhotoListBean>) {
+    fun setPhotoType(list: ArrayList<VehisPara.ZpBean>) {
         this.data = list
 //        Collections.sort(data, mCompareR)
         notifyDataSetChanged()
@@ -49,7 +48,7 @@ class CheckDataPhotoAdapter(private var mContext: Context? = null) :
         notifyItemChanged(position)
     }
 
-    fun getDataList(): ArrayList<ShareEntity.PhotoListBean> {
+    fun getDataList(): ArrayList<VehisPara.ZpBean> {
         return this.data
     }
 
@@ -68,6 +67,9 @@ class CheckDataPhotoAdapter(private var mContext: Context? = null) :
             tvType = itemView.findViewById(R.id.tv_type)
             ivPhoto = itemView.findViewById(R.id.iv_photo)
             ivDelete = itemView.findViewById(R.id.iv_delete)
+            Log.d("lylog","  adapterPosition = "+adapterPosition)
+
+
             ivPhoto!!.setOnClickListener {
                 if (mOnClickListener != null && data[adapterPosition].zplj == null) {
                     mOnClickListener!!.itemOnClick(adapterPosition)
@@ -92,7 +94,7 @@ class CheckDataPhotoAdapter(private var mContext: Context? = null) :
 
         }
 
-        fun initItemView(bean: ShareEntity.PhotoListBean) {
+        fun initItemView(bean: VehisPara.ZpBean) {
             tvType!!.text = bean.zpmc
             tvType!!.setTextColor(Color.BLACK)
             if (bean.zplj != null && bean.zplj.isNotEmpty()) {
@@ -102,6 +104,11 @@ class CheckDataPhotoAdapter(private var mContext: Context? = null) :
                 ivPhoto!!.setImageResource(R.mipmap.take_photo)
                 ivPhoto!!.scaleType = ImageView.ScaleType.CENTER
                 ivDelete!!.visibility = View.GONE
+            }
+            if(bean.isSfbp){
+                tvType!!.setTextColor(ContextCompat.getColor(mContext!!,R.color.red))
+            }else{
+                tvType!!.setTextColor(ContextCompat.getColor(mContext!!,R.color.black))
             }
         }
     }
